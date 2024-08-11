@@ -9,7 +9,6 @@ export default class GameScene1 extends Phaser.Scene {
     this.platforms;
     this.player1;
     this.cursors;
-
     // Background
     this.add.image(600, 350, "sky").setScale(1.5);
     this.add.image(600, 100, "sun").setScale(0.1);
@@ -17,7 +16,7 @@ export default class GameScene1 extends Phaser.Scene {
     // Platforms
     this.platforms = this.physics.add.staticGroup();
     this.platforms.create(600, 550, "island").refreshBody();
-    this.platforms.create(250, 450, "lilisland1").refreshBody();
+    this.platforms.create(250, 460, "lilisland1").refreshBody();
     this.platforms.create(1000, 500, "lilisland2").refreshBody().flipX = true;
 
     // Player
@@ -25,8 +24,22 @@ export default class GameScene1 extends Phaser.Scene {
     this.physics.add.collider(this.player1, this.platforms);
     this.player1.setBounce(0.15);
     this.player1.setCollideWorldBounds(false);
-    this.player1.body.setSize(53, 20);
+    // this.player1.body.setCircle(10);
+    this.player1.body.setSize(15, 28);
+    this.player1.body.setOffset(23, -1);
     
+    // Create an invisible sprite to act as the second hitbox
+    this.hitbox2 = this.physics.add.sprite(this.player1.x, this.player1.y, null);
+    this.hitbox2.body.setSize(50, 10); // Set size of the secondary hitbox 
+    this.hitbox2.body.setOffset(-10, 5); 
+    this.hitbox2.body.allowGravity = false; 
+    this.hitbox2.body.setImmovable(true);
+    this.hitbox2.visible = false;
+
+    // Example: Collide the secondary hitbox with platforms
+    this.physics.add.collider(this.hitbox2, this.platforms);
+
+
     // Input handling
     this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -52,6 +65,10 @@ export default class GameScene1 extends Phaser.Scene {
     });
   }
   update() {
+    // Ensure hitbox2 follows player1 exactly
+    this.hitbox2.setPosition(this.player1.x, this.player1.y);
+
+
     if (this.cursors.left.isDown) {
       this.player1.setVelocityX(-160);
       this.player1.anims.play('left', true);
@@ -68,6 +85,8 @@ export default class GameScene1 extends Phaser.Scene {
     if (this.cursors.up.isDown && this.player1.body.touching.down) {
       this.player1.setVelocityY(-200);
     }
+
+   
   }
 
   }
