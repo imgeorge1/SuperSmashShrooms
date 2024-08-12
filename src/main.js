@@ -12,7 +12,7 @@ const config = {
         default: "arcade",
         arcade: {
           gravity: { y: 200 },
-          debug: true,
+          debug: false,
         },
       },
     scene: [BootScene, PreloadScene, GameScene1, GameScene2, GameScene3]
