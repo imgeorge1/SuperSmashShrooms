@@ -13,6 +13,12 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image("island", "src/assets/island.png")
     this.load.image("lilisland1", "src/assets/miniisland1.png")
     this.load.image("lilisland2", "src/assets/miniisland2.png")
+    //enemies
+    this.load.image("ball", "src/assets/enemies/bowlingBall.png");
+    this.load.image("coconut", "src/assets/enemies/coconut.png");
+    this.load.image("rock", "src/assets/enemies/rock.png");
+    this.load.image("watermelon", "src/assets/enemies/watermelon.png");
+
     //player
     this.load.spritesheet("p1", "src/assets/blewit.png", {
       frameWidth: 61,

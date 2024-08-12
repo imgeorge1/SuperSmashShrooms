@@ -1,13 +1,17 @@
 export default class GameScene1 extends Phaser.Scene {
   constructor() {
     super('GameScene1');
+    this.score = 0;
   }
 
   create() {
     // Define class-level variables
     this.platforms;
     this.player1;
-    this.keys; // Define keys here
+    this.keys; 
+    this.enemy;
+    this.scoreText;
+    this.fallingItems;
 
     // Background
     this.add.image(600, 350, "sky").setScale(1.5);
@@ -29,13 +33,13 @@ export default class GameScene1 extends Phaser.Scene {
 
     // Create an invisible sprite to act as the second hitbox
     this.hitbox2 = this.physics.add.sprite(this.player1.x, this.player1.y, null);
-    this.hitbox2.body.setSize(50, 10); // Set size of the secondary hitbox 
-    this.hitbox2.body.setOffset(-10, 5); 
-    this.hitbox2.body.allowGravity = false; 
+    this.hitbox2.body.setSize(50, 10);
+    this.hitbox2.body.setOffset(-10, 5);
+    this.hitbox2.body.allowGravity = false;
     this.hitbox2.body.setImmovable(true);
     this.hitbox2.visible = false;
 
-    // Example: Collide the secondary hitbox with platforms
+    // Collide the secondary hitbox with platforms
     this.physics.add.collider(this.hitbox2, this.platforms);
 
     // Input handling for WASD keys
@@ -66,6 +70,31 @@ export default class GameScene1 extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
+
+    // Enemies
+    this.enemy = this.physics.add.group();
+    this.fallingItems = ["ball", "coconut", "rock", "watermelon"];
+
+    // Score text
+    this.scoreText = this.add.text(16, 16, "score: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
+    // Call the spawn function repeatedly
+    this.time.addEvent({
+      delay: 400, // Time between each spawn
+      callback: () => {
+        const x = Phaser.Math.Between(20, 1180);
+        const texture = Phaser.Math.RND.pick(this.fallingItems);
+        this.enemy.create(x, 0, texture);
+
+        this.score += 1;
+        this.scoreText.setText("Score: " + this.score);
+      },
+      callbackScope: this,
+      loop: true
+    });
   }
 
   update() {
@@ -85,8 +114,8 @@ export default class GameScene1 extends Phaser.Scene {
 
     if (this.keys.W.isDown && this.player1.body.touching.down) {
       this.player1.setVelocityY(-200);
-    }else  if (this.keys.S.isDown && !this.player1.body.touching.down) {
-      this.player1.setVelocityY(150);
+    } else if (this.keys.S.isDown && !this.player1.body.touching.down) {
+      this.player1.setVelocityY(200);
     }
   }
 }
