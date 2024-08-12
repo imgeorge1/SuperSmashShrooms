@@ -100,7 +100,7 @@ export default class GameScene1 extends Phaser.Scene {
     sound.play();
     this.score = 0
     this.game.sound.stopAll();
-    this.scene.start("PreloadScene")
+    this.scene.start("GameScene1")
   }
   // Function to spawn enemies
   spawnEnemy() {
