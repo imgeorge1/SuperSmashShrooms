@@ -12,7 +12,10 @@ export default class GameScene1 extends Phaser.Scene {
     this.enemy;
     this.scoreText;
     this.fallingItems;
-
+    // Add background music
+    const music = this.sound.add("themeSong", {volume: 0.3});
+    music.loop = true
+    music.play();
     // Background
     this.add.image(600, 350, "sky").setScale(1.5);
     this.add.image(600, 100, "sun").setScale(0.1);
@@ -93,8 +96,11 @@ export default class GameScene1 extends Phaser.Scene {
     this.physics.add.collider(this.hitbox2, this.enemy, this.hitEnemy, null, this);
   }
   hitEnemy() {
+    const sound = this.sound.add("hurt");
+    sound.play();
     this.score = 0
-    this.scene.start("GameScene1")
+    this.game.sound.stopAll();
+    this.scene.start("PreloadScene")
   }
   // Function to spawn enemies
   spawnEnemy() {
@@ -127,6 +133,8 @@ export default class GameScene1 extends Phaser.Scene {
     }
 
     if (this.keys.W.isDown && this.player1.body.touching.down) {
+      const jump = this.sound.add("jump");
+      jump.play();
       this.player1.setVelocityY(-200);
     } else if (this.keys.S.isDown && !this.player1.body.touching.down) {
       this.player1.setVelocityY(220);
