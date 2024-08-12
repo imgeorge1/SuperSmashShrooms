@@ -8,7 +8,7 @@ export default class GameScene1 extends Phaser.Scene {
     // Define class-level variables
     this.platforms;
     this.player1;
-    this.keys; 
+    this.keys;
     this.enemy;
     this.scoreText;
     this.fallingItems;
@@ -24,9 +24,9 @@ export default class GameScene1 extends Phaser.Scene {
     this.platforms.create(1000, 500, "lilisland2").refreshBody().flipX = true;
 
     // Player
-    this.player1 = this.physics.add.sprite(600, 350, "p1");
+    this.player1 = this.physics.add.sprite(600, 450, "p1");
     this.physics.add.collider(this.player1, this.platforms);
-    this.player1.setBounce(0.15);
+    this.player1.setBounce(0.1);
     this.player1.setCollideWorldBounds(false);
     this.player1.body.setSize(15, 28);
     this.player1.body.setOffset(23, -1);
@@ -76,7 +76,7 @@ export default class GameScene1 extends Phaser.Scene {
     this.fallingItems = ["ball", "coconut", "rock", "watermelon"];
 
     // Score text
-    this.scoreText = this.add.text(16, 16, "score: 0", {
+    this.scoreText = this.add.text(16, 16, "Score: 0", {
       fontSize: "32px",
       fill: "#000",
     });
@@ -84,18 +84,32 @@ export default class GameScene1 extends Phaser.Scene {
     // Call the spawn function repeatedly
     this.time.addEvent({
       delay: 400, // Time between each spawn
-      callback: () => {
-        const x = Phaser.Math.Between(20, 1180);
-        const texture = Phaser.Math.RND.pick(this.fallingItems);
-        this.enemy.create(x, 0, texture);
-
-        this.score += 1;
-        this.scoreText.setText("Score: " + this.score);
-      },
+      callback: this.spawnEnemy, // Reference to the function
       callbackScope: this,
       loop: true
     });
+
+    this.physics.add.collider(this.player1, this.enemy, this.hitEnemy, null, this);
+    this.physics.add.collider(this.hitbox2, this.enemy, this.hitEnemy, null, this);
   }
+  hitEnemy() {
+    this.score = 0
+    this.scene.start("GameScene1")
+  }
+  // Function to spawn enemies
+  spawnEnemy() {
+    const x = Phaser.Math.Between(20, 1180);
+    const texture = Phaser.Math.RND.pick(this.fallingItems);
+    const enemy = this.enemy.create(x, 0, texture);
+    
+    // Ensure the body is available before setting the circular hitbox
+    enemy.setCircle(15); // Adjust the radius to fit your needs
+
+    this.score += 1;
+    this.scoreText.setText("Score: " + this.score);
+  }
+
+  
 
   update() {
     // Ensure hitbox2 follows player1 exactly
@@ -115,7 +129,7 @@ export default class GameScene1 extends Phaser.Scene {
     if (this.keys.W.isDown && this.player1.body.touching.down) {
       this.player1.setVelocityY(-200);
     } else if (this.keys.S.isDown && !this.player1.body.touching.down) {
-      this.player1.setVelocityY(200);
+      this.player1.setVelocityY(220);
     }
   }
 }
