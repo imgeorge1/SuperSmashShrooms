@@ -95,12 +95,17 @@ export default class GameScene1 extends Phaser.Scene {
     this.physics.add.collider(this.player1, this.enemy, this.hitEnemy, null, this);
     this.physics.add.collider(this.hitbox2, this.enemy, this.hitEnemy, null, this);
   }
+  lose(){
+    setInterval(()=>{
+      this.game.sound.stopAll();
+      this.scene.start("PreloadScene")
+    }, 100)
+  }
   hitEnemy() {
-    const sound = this.sound.add("hurt");
-    sound.play();
+    const hurt = this.sound.add("hurt");
+    hurt.play();
     this.score = 0
-    this.game.sound.stopAll();
-    this.scene.start("PreloadScene")
+    this.lose()
   }
   // Function to spawn enemies
   spawnEnemy() {
