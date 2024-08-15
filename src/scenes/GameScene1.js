@@ -105,7 +105,8 @@ export default class GameScene1 extends Phaser.Scene {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0
-    this.lose()
+    this.game.sound.stopAll();
+    this.scene.start("GameScene1")
   }
   // Function to spawn enemies
   spawnEnemy() {
