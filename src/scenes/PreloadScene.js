@@ -23,6 +23,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image("coconut", "src/assets/enemies/coconut.png");
     this.load.image("rock", "src/assets/enemies/rock.png");
     this.load.image("watermelon", "src/assets/enemies/watermelon.png");
+    //boost
+    this.load.image("star", "src/assets/booststar2.png")
+    this.load.image("star1", "src/assets/powerupsta1.png")
 
     //player
     this.load.spritesheet("p1", "src/assets/blewit.png", {

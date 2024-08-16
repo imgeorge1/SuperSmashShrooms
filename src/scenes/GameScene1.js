@@ -12,15 +12,17 @@ export default class GameScene1 extends Phaser.Scene {
     this.enemy;
     this.scoreText;
     this.fallingItems;
+    this.boostFall
+    this.boost
     
     // Add background music
-    this.music = this.sound.add("themeSong", {volume: 0.3});
+    this.music = this.sound.add("themeSong", {volume: 0.25});
     this.music.loop = true;
     this.music.play();
 
     // Background
     this.add.image(600, 350, "sky").setScale(1.5);
-    this.add.image(600, 100, "sun").setScale(0.1);
+    this.add.image(600, 100, "sun").setScale(0.15);
 
     // Platforms
     this.platforms = this.physics.add.staticGroup();
@@ -93,9 +95,25 @@ export default class GameScene1 extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
-
+    //player1 and enemy collisions
     this.physics.add.collider(this.player1, this.enemy, this.hitEnemy, null, this);
     this.physics.add.collider(this.hitbox2, this.enemy, this.hitEnemy, null, this);
+
+    //boost code
+    this.boost = this.physics.add.group()
+    this.boostFall = ["star", "star1"]
+    
+    this.time.addEvent({
+      delay: 10000, // Time between each spawn
+      callback: this.spawnBoost, // Reference to the function
+      callbackScope: this,
+      loop: true
+    });
+
+    this.physics.add.collider(this.player1, this.boost, this.hitBoost, null, this);
+    this.physics.add.collider(this.hitbox2, this.boost, this.hitBoost, null, this);
+    this.physics.add.collider(this.platforms, this.boost);
+
   }
 
   hitEnemy() {
@@ -118,9 +136,30 @@ export default class GameScene1 extends Phaser.Scene {
     // Ensure the body is available before setting the circular hitbox
     enemy.setCircle(15); // Adjust the radius to fit your needs
 
+    // Set a random angular velocity for rotation
+    const rotationSpeed = Phaser.Math.Between(-200, 200); // Adjust the range as needed
+    enemy.setAngularVelocity(rotationSpeed);
+
     this.score += 1;
     this.scoreText.setText("Score: " + this.score);
   }
+
+
+  spawnBoost(){
+    const x = Phaser.Math.Between(20, 1180);
+    const texture = Phaser.Math.RND.pick(this.boostFall);
+    const boost = this.boost.create(x, 0, texture);
+  
+
+    this.score += 1;
+    this.scoreText.setText("Score: " + this.score);
+  }
+  hitBoost(player, boost) {
+    this.score += 100;
+    this.scoreText.setText("Score: " + this.score);
+
+    boost.destroy(); // Destroy the boost that was hit
+}
 
   update() {
     // Ensure hitbox2 follows player1 exactly
