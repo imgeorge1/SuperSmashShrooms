@@ -12,10 +12,12 @@ export default class GameScene1 extends Phaser.Scene {
     this.enemy;
     this.scoreText;
     this.fallingItems;
+    
     // Add background music
-    const music = this.sound.add("themeSong", {volume: 0.3});
-    music.loop = true
-    music.play();
+    this.music = this.sound.add("themeSong", {volume: 0.3});
+    this.music.loop = true;
+    this.music.play();
+
     // Background
     this.add.image(600, 350, "sky").setScale(1.5);
     this.add.image(600, 100, "sun").setScale(0.1);
@@ -95,19 +97,18 @@ export default class GameScene1 extends Phaser.Scene {
     this.physics.add.collider(this.player1, this.enemy, this.hitEnemy, null, this);
     this.physics.add.collider(this.hitbox2, this.enemy, this.hitEnemy, null, this);
   }
-  lose(){
-    setInterval(()=>{
-      this.game.sound.stopAll();
-      this.scene.start("PreloadScene")
-    }, 100)
-  }
+
   hitEnemy() {
     const hurt = this.sound.add("hurt");
     hurt.play();
-    this.score = 0
-    this.game.sound.stopAll();
-    this.scene.start("GameScene1")
+    this.score = 0;
+    
+    this.time.delayedCall(100, () => {
+      this.music.stop(); // Only stop the music
+      this.scene.start("PreloadScene");
+    });
   }
+
   // Function to spawn enemies
   spawnEnemy() {
     const x = Phaser.Math.Between(20, 1180);
@@ -121,19 +122,21 @@ export default class GameScene1 extends Phaser.Scene {
     this.scoreText.setText("Score: " + this.score);
   }
 
-  
-
   update() {
     // Ensure hitbox2 follows player1 exactly
     this.hitbox2.setPosition(this.player1.x, this.player1.y);
 
+    // Input handling and animations
     if (this.keys.A.isDown) {
+      this.hitbox2.setVelocityX(-180)
       this.player1.setVelocityX(-180);
       this.player1.anims.play('left', true);
     } else if (this.keys.D.isDown) {
       this.player1.setVelocityX(180);
+      this.hitbox2.setVelocityX(180)
       this.player1.anims.play('right', true);
     } else {
+      this.hitbox2.setVelocityX(0)
       this.player1.setVelocityX(0);
       this.player1.anims.play('turn');
     }
@@ -141,9 +144,14 @@ export default class GameScene1 extends Phaser.Scene {
     if (this.keys.W.isDown && this.player1.body.touching.down) {
       const jump = this.sound.add("jump");
       jump.play();
+      this.hitbox2.setVelocityY(-220)
       this.player1.setVelocityY(-200);
     } else if (this.keys.S.isDown && !this.player1.body.touching.down) {
+      this.hitbox2.setVelocityY(300)
       this.player1.setVelocityY(220);
+    } 
+    if(this.player1.body.touching.down ){
+      this.hitbox2.setVelocityY(0)
     }
   }
 }
