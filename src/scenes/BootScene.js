@@ -26,5 +26,8 @@ export default class BootScene extends Phaser.Scene {
     document.addEventListener('keydown', () => {
       this.scene.start('PreloadScene');
     });
+    document.addEventListener('mousedown', () => {
+      this.scene.start('PreloadScene');
+    });
   }
 }

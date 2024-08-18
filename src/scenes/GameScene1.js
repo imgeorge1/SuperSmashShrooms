@@ -116,12 +116,17 @@ export default class GameScene1 extends Phaser.Scene {
 
   }
 
-  hitEnemy() {
+  hitEnemy(player, enemy) {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0;
     
-    this.time.delayedCall(100, () => {
+    this.player1.destroy()
+    this.hitbox2.destroy();
+
+    this.player1Dead = true;
+
+    this.time.delayedCall(1000, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
     });
@@ -162,6 +167,10 @@ export default class GameScene1 extends Phaser.Scene {
 }
 
   update() {
+    if (this.player1Dead) {
+      return;
+    } 
+
     // Ensure hitbox2 follows player1 exactly
     this.hitbox2.setPosition(this.player1.x, this.player1.y);
 
