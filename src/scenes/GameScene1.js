@@ -121,11 +121,15 @@ export default class GameScene1 extends Phaser.Scene {
     hurt.play();
     this.score = 0;
     
-    this.player1.destroy()
-    this.hitbox2.destroy();
+    // Hide player
+    this.player1.setVisible(false);
+    this.player1.body.enable = false; // Disable physics
+    this.player1.setCollideWorldBounds(false); // Disable collisions
 
-    this.player1Dead = true;
-
+    // Optionally, you can also disable the second hitbox
+    this.hitbox2.setVisible(false);
+    this.hitbox2.body.enable = false;
+    
     this.time.delayedCall(1000, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
@@ -167,9 +171,6 @@ export default class GameScene1 extends Phaser.Scene {
 }
 
   update() {
-    if (this.player1Dead) {
-      return;
-    } 
 
     // Ensure hitbox2 follows player1 exactly
     this.hitbox2.setPosition(this.player1.x, this.player1.y);
