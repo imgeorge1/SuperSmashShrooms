@@ -151,6 +151,12 @@ export default class GameScene1 extends Phaser.Scene {
 
     this.score += 1;
     this.scoreText.setText("Score: " + this.score);
+    if(this.score >= 1000){
+      this.add.text(600, 350, "YOU WON!", {
+        fontSize: "32px",
+        fill: "#000",
+      }).setOrigin(0.5, 0.5);
+    }
   }
 
 
