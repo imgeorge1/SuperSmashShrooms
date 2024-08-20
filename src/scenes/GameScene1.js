@@ -138,7 +138,7 @@ export default class GameScene1 extends Phaser.Scene {
     this.hitbox2.setVisible(false);
     this.hitbox2.body.enable = false;
     
-    this.time.delayedCall(2000, () => {
+    this.time.delayedCall(1000, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
     });

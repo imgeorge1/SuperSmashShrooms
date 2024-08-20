@@ -32,7 +32,7 @@ export default class GameScene2 extends Phaser.Scene {
     this.platforms.create(1000, 500, "lilisland2").refreshBody().flipX = true;
 
     // Player1
-    this.player1 = this.physics.add.sprite(600, 450, "p1");
+    this.player1 = this.physics.add.sprite(570, 450, "p1");
     this.physics.add.collider(this.player1, this.platforms);
     this.player1.setBounce(0.1);
     this.player1.setCollideWorldBounds(false);
@@ -46,8 +46,25 @@ export default class GameScene2 extends Phaser.Scene {
     this.hitbox2.body.allowGravity = false;
     this.hitbox2.body.setImmovable(true);
     this.hitbox2.visible = false;
+    
+    // Player2
+    this.player2 = this.physics.add.sprite(630, 450, "p2");
+    this.physics.add.collider(this.player2, this.platforms);
+    this.player2.setBounce(0.1);
+    this.player2.setCollideWorldBounds(false);
+    this.player2.body.setSize(15, 28);
+    this.player2.body.setOffset(23, -1);
+
+    // Create an invisible sprite to act as the second hitbox
+    this.hitbox3 = this.physics.add.sprite(this.player2.x, this.player2.y, null);
+    this.hitbox3.body.setSize(50, 10);
+    this.hitbox3.body.setOffset(-10, 5);
+    this.hitbox3.body.allowGravity = false;
+    this.hitbox3.body.setImmovable(true);
+    this.hitbox3.visible = false;
 
     // Collide the secondary hitbox with platforms
+    this.physics.add.collider(this.hitbox3, this.platforms);
     this.physics.add.collider(this.hitbox2, this.platforms);
 
     // Input handling for WASD and arrow keys
@@ -82,25 +99,6 @@ export default class GameScene2 extends Phaser.Scene {
       frameRate: 10,
       repeat: -1
     });
-
-    // Player2
-    this.player2 = this.physics.add.sprite(600, 450, "p2");
-    this.physics.add.collider(this.player2, this.platforms);
-    this.player2.setBounce(0.1);
-    this.player2.setCollideWorldBounds(false);
-    this.player2.body.setSize(15, 28);
-    this.player2.body.setOffset(23, -1);
-
-    // Create an invisible sprite to act as the second hitbox
-    this.hitbox3 = this.physics.add.sprite(this.player2.x, this.player2.y, null);
-    this.hitbox3.body.setSize(50, 10);
-    this.hitbox3.body.setOffset(-10, 5);
-    this.hitbox3.body.allowGravity = false;
-    this.hitbox3.body.setImmovable(true);
-    this.hitbox3.visible = false;
-
-    // Collide the secondary hitbox with platforms
-    this.physics.add.collider(this.hitbox3, this.platforms);
 
     // Define Animations for player2
     this.anims.create({
@@ -147,11 +145,13 @@ export default class GameScene2 extends Phaser.Scene {
     this.physics.add.collider(this.hitbox3, this.player1);
   }
 
+//player1
   hitEnemy(player, enemy) {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0;
     this.player1dead = true
+    this.physics.pause()
 
     // Add the image at the player's position
     const powImage = this.add.image(this.player1.x, this.player1.y, "pow").setScale(1.5);
@@ -170,18 +170,20 @@ export default class GameScene2 extends Phaser.Scene {
     this.hitbox2.setVisible(false);
     this.hitbox2.body.enable = false;
 
-    this.time.delayedCall(1000, () => {
+    this.time.delayedCall(1200, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
+      this.player1dead = false
+      this.player2dead = false
     });
   }
-  //player2 hitenemy
+  //player2 
   hitEnemy2(player, enemy) {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0;
-
     this.player2dead = true
+    this.physics.pause()
 
     // Add the image at the player's position
     const powImage = this.add.image(this.player2.x, this.player2.y, "pow").setScale(1.5);
@@ -200,9 +202,11 @@ export default class GameScene2 extends Phaser.Scene {
     this.hitbox3.setVisible(false);
     this.hitbox3.body.enable = false;
 
-    this.time.delayedCall(3000, () => {
+    this.time.delayedCall(1200, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
+      this.player1dead = false
+      this.player2dead = false
     });
   }
 
