@@ -170,6 +170,8 @@ export default class GameScene1 extends Phaser.Scene {
     this.scoreText.setText("Score: " + this.score);
   }
   hitBoost(player, boost) {
+    const star = this.sound.add("star");
+    star.play();
     this.score += 100;
     this.scoreText.setText("Score: " + this.score);
 

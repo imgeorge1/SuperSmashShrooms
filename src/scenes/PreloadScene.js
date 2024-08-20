@@ -8,6 +8,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.audio("themeSong", "src/assets/sfx/ShroomMusic.mp3")
     this.load.audio("hurt", "src/assets/sfx/hurt.wav")
     this.load.audio("jump", "src/assets/sfx/jump.wav")
+    this.load.audio("star", "src/assets/sfx/star.wav")
     //menu buttons
     this.load.image("1pBTN", "src/assets/1p.png")
     this.load.image("2pBTN", "src/assets/2p.png")
