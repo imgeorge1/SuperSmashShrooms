@@ -120,6 +120,14 @@ export default class GameScene1 extends Phaser.Scene {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0;
+
+    // Add the image at the player's position
+    const powImage = this.add.image(this.player1.x, this.player1.y, "pow").setScale(1.5);
+
+    // Set a timed event to remove the image after 200 milliseconds
+    this.time.delayedCall(200, () => {
+        powImage.destroy(); // Remove the image
+    });
     
     // Hide player
     this.player1.setVisible(false);
@@ -130,7 +138,7 @@ export default class GameScene1 extends Phaser.Scene {
     this.hitbox2.setVisible(false);
     this.hitbox2.body.enable = false;
     
-    this.time.delayedCall(1000, () => {
+    this.time.delayedCall(2000, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
     });

@@ -41,6 +41,8 @@ export default class PreloadScene extends Phaser.Scene {
       frameWidth: 61,
       frameHeight: 28,
     });
+    //
+    this.load.image("pow", "src/assets/pow.png")
   }
 
   create() {

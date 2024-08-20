@@ -1,6 +1,9 @@
 export default class GameScene2 extends Phaser.Scene {
   constructor() {
     super('GameScene2');
+
+    this.player1dead = false
+    this.player2dead = false
   }
 
   create() {
@@ -148,6 +151,15 @@ export default class GameScene2 extends Phaser.Scene {
     const hurt = this.sound.add("hurt");
     hurt.play();
     this.score = 0;
+    this.player1dead = true
+
+    // Add the image at the player's position
+    const powImage = this.add.image(this.player1.x, this.player1.y, "pow").setScale(1.5);
+
+    // Set a timed event to remove the image after 200 milliseconds
+    this.time.delayedCall(200, () => {
+        powImage.destroy(); // Remove the image
+    });
 
     // Hide player
     this.player1.setVisible(false);
@@ -169,6 +181,16 @@ export default class GameScene2 extends Phaser.Scene {
     hurt.play();
     this.score = 0;
 
+    this.player2dead = true
+
+    // Add the image at the player's position
+    const powImage = this.add.image(this.player2.x, this.player2.y, "pow").setScale(1.5);
+
+    // Set a timed event to remove the image after 200 milliseconds
+    this.time.delayedCall(200, () => {
+        powImage.destroy(); // Remove the image
+    });
+
     // Hide player
     this.player2.setVisible(false);
     this.player2.body.enable = false; // Disable physics
@@ -178,7 +200,7 @@ export default class GameScene2 extends Phaser.Scene {
     this.hitbox3.setVisible(false);
     this.hitbox3.body.enable = false;
 
-    this.time.delayedCall(1000, () => {
+    this.time.delayedCall(3000, () => {
       this.music.stop(); // Only stop the music
       this.scene.start("PreloadScene");
     });
@@ -258,6 +280,13 @@ export default class GameScene2 extends Phaser.Scene {
     }
     if (this.player2.body.touching.down) {
       this.hitbox3.setVelocityY(0);
+    }
+
+    if(this.player1dead === true){
+      this.add.text(600, 250, "Player2 wins", { fontSize: '32px', fill: '#000000' }).setOrigin(0.5, 0.5)
+    }
+    if(this.player2dead === true){
+      this.add.text(600, 250, "Player1 wins", { fontSize: '32px', fill: '#000000' }).setOrigin(0.5, 0.5)
     }
   }
 }
