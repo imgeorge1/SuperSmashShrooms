@@ -20,7 +20,8 @@ export default class GameScene2 extends Phaser.Scene {
     this.scoreText2
     this.fallingItems;
     this.boostFall
-    this.boost
+    this.boost;
+    this.crate
 
     // Add background music
     this.music = this.sound.add("themeSong", { volume: 0.25 });
@@ -79,10 +80,12 @@ export default class GameScene2 extends Phaser.Scene {
       A: Phaser.Input.Keyboard.KeyCodes.A,
       S: Phaser.Input.Keyboard.KeyCodes.S,
       D: Phaser.Input.Keyboard.KeyCodes.D,
+      C: Phaser.Input.Keyboard.KeyCodes.C,
       UP: Phaser.Input.Keyboard.KeyCodes.UP,
       LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
-      RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT
+      RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE
     });
 
     // Define Animations
@@ -160,6 +163,18 @@ export default class GameScene2 extends Phaser.Scene {
       callbackScope: this,
       loop: true
     });
+
+    //crate code
+    this.crate = this.physics.add.group()
+    this.crateFall = ["crate"]
+
+    this.time.addEvent({
+      delay: 10000, // Time between each spawn
+      callback: this.spawnCrate, // Reference to the function
+      callbackScope: this,
+      loop: true
+    });
+    this.physics.add.collider(this.platforms, this.crate);
 
     // Player1 and enemy collisions
     this.physics.add.collider(this.player1, this.enemy, this.hitEnemy, null, this);
@@ -260,11 +275,13 @@ export default class GameScene2 extends Phaser.Scene {
     const x = Phaser.Math.Between(20, 1180);
     const texture = Phaser.Math.RND.pick(this.boostFall);
     const boost = this.boost.create(x, 0, texture);
-  
-
-    // this.score += 1;
-    // this.scoreText.setText("Score: " + this.score);
   }
+  spawnCrate(){
+    const x = Phaser.Math.Between(20, 1180);
+    const texture = Phaser.Math.RND.pick(this.crateFall);
+    const crate = this.crate.create(x, 0, texture);
+  }
+
  // Player1 hits boost
   hitBoost1(player, boost) {
     const star = this.sound.add("star");
@@ -347,6 +364,23 @@ export default class GameScene2 extends Phaser.Scene {
     }
     if (this.player2.body.touching.down) {
       this.hitbox3.setVelocityY(0);
+    }
+
+    //shooting
+    if(this.keys.C.isDown ){
+      this.shotL = this.physics.add.image(this.player1.x, this.player1.y, "laser")
+      this.shotR = this.physics.add.image(this.player1.x, this.player1.y, "laser")
+
+      this.shotL.setVelocityX(-1000)
+      this.shotR.setVelocityX(1000)
+    }
+
+    if(this.keys.SPACE.isDown ){
+      this.shotL = this.physics.add.image(this.player2.x, this.player2.y, "laser")
+      this.shotR = this.physics.add.image(this.player2.x, this.player2.y, "laser")
+
+      this.shotL.setVelocityX(-1000)
+      this.shotR.setVelocityX(1000)
     }
 
     if(this.player1dead === true){

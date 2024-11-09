@@ -14,7 +14,11 @@ export default class GameScene1 extends Phaser.Scene {
     this.fallingItems;
     this.boostFall
     this.boost
-    
+    this.laser
+    this.shotL
+    this.shotR
+
+
     // Add background music
     this.music = this.sound.add("themeSong", {volume: 0.25});
     this.music.loop = true;
@@ -54,7 +58,7 @@ export default class GameScene1 extends Phaser.Scene {
       W: Phaser.Input.Keyboard.KeyCodes.W,
       A: Phaser.Input.Keyboard.KeyCodes.A,
       S: Phaser.Input.Keyboard.KeyCodes.S,
-      D: Phaser.Input.Keyboard.KeyCodes.D
+      D: Phaser.Input.Keyboard.KeyCodes.D,
     });
 
     // Define Animations
@@ -205,6 +209,7 @@ export default class GameScene1 extends Phaser.Scene {
       this.player1.setVelocityX(0);
       this.player1.anims.play('turn');
     }
+
 
     if (this.keys.W.isDown && this.player1.body.touching.down) {
       const jump = this.sound.add("jump");

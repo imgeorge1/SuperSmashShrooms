@@ -43,6 +43,8 @@ export default class PreloadScene extends Phaser.Scene {
     });
     //
     this.load.image("pow", "src/assets/pow.png")
+    this.load.image("laser", "src/assets/laser.png")
+    this.load.image("crate", "src/assets/crate.png")
   }
 
   create() {
