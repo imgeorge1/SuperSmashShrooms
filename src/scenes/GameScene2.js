@@ -2,19 +2,25 @@ export default class GameScene2 extends Phaser.Scene {
   constructor() {
     super('GameScene2');
 
-    this.player1dead = false
-    this.player2dead = false
+    this.player1dead = false;
+    this.player2dead = false;
+    this.score1 = 0; // Red player's score
+    this.score2 = 0; // Brown player's score
   }
+
 
   create() {
     // Define class-level variables
     this.platforms;
     this.player1;
+    this.player2
     this.keys;
-    this.enemy;
+    this.enemy; 
+    this.scoreText1;
+    this.scoreText2
     this.fallingItems;
-    this.boostFall;
-    this.boost;
+    this.boostFall
+    this.boost
 
     // Add background music
     this.music = this.sound.add("themeSong", { volume: 0.25 });
@@ -125,10 +131,32 @@ export default class GameScene2 extends Phaser.Scene {
     this.enemy = this.physics.add.group();
     this.fallingItems = ["ball", "coconut", "rock", "watermelon"];
 
+    // Scoring text for both players
+    this.scoreText1 = this.add.text(16, 16, "Red Score: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
+    this.scoreText2 = this.add.text(16, 48, "Brown Score: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
     // Call the spawn function repeatedly
     this.time.addEvent({
       delay: 400, // Time between each spawn
       callback: this.spawnEnemy, // Reference to the function
+      callbackScope: this,
+      loop: true
+    });
+
+    //boost code
+    this.boost = this.physics.add.group()
+    this.boostFall = ["star", "star1"]
+    
+    this.time.addEvent({
+      delay: 10000, // Time between each spawn
+      callback: this.spawnBoost, // Reference to the function
       callbackScope: this,
       loop: true
     });
@@ -143,6 +171,10 @@ export default class GameScene2 extends Phaser.Scene {
     this.physics.add.collider(this.player1, this.player2);
     this.physics.add.collider(this.hitbox2, this.player2);
     this.physics.add.collider(this.hitbox3, this.player1);
+    // boost
+    this.physics.add.collider(this.player1, this.boost, this.hitBoost1, null, this)
+    this.physics.add.collider(this.player2, this.boost, this.hitBoost2, null, this)
+    this.physics.add.collider(this.platforms, this.boost);
   }
 
 //player1
@@ -224,6 +256,37 @@ export default class GameScene2 extends Phaser.Scene {
     enemy.setAngularVelocity(rotationSpeed);
   }
 
+  spawnBoost(){
+    const x = Phaser.Math.Between(20, 1180);
+    const texture = Phaser.Math.RND.pick(this.boostFall);
+    const boost = this.boost.create(x, 0, texture);
+  
+
+    // this.score += 1;
+    // this.scoreText.setText("Score: " + this.score);
+  }
+ // Player1 hits boost
+  hitBoost1(player, boost) {
+    const star = this.sound.add("star");
+    star.play();
+
+    this.score1 += 10;  // Increase Red player's score by 100
+    this.scoreText1.setText("Red Score: " + this.score1);  // Update the score text for player 1
+    
+    boost.destroy(); // Destroy the boost that was hit
+  }
+
+  // Player2 hits boost
+  hitBoost2(player, boost) {
+    const star = this.sound.add("star");
+    star.play();
+
+    this.score2 += 10;  // Increase Brown player's score by 100
+    this.scoreText2.setText("Brown Score: " + this.score2);  // Update the score text for player 2
+    
+    boost.destroy(); // Destroy the boost that was hit
+  }
+
   update() {
     // Ensure hitbox2 follows player1 exactly
     this.hitbox2.setPosition(this.player1.x, this.player1.y);
@@ -291,6 +354,13 @@ export default class GameScene2 extends Phaser.Scene {
     }
     if(this.player2dead === true){
       this.add.text(600, 250, "Player1 wins", { fontSize: '32px', fill: '#000000' }).setOrigin(0.5, 0.5)
+    }
+
+    if(this.scoreText1 === 100){
+      this.add.text(600, 250, "Player1 wins", { fontSize: '32px', fill: '#000000' }).setOrigin(0.5, 0.5)
+    }
+    if(this.scoreText2 === 100){
+      this.add.text(600, 250, "Player2 wins", { fontSize: '32px', fill: '#000000' }).setOrigin(0.5, 0.5)
     }
   }
 }

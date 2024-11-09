@@ -9,7 +9,7 @@ export default class GameScene1 extends Phaser.Scene {
     this.platforms;
     this.player1;
     this.keys;
-    this.enemy;
+    this.enemy; 
     this.scoreText;
     this.fallingItems;
     this.boostFall
@@ -167,13 +167,13 @@ export default class GameScene1 extends Phaser.Scene {
     }
   }
 
-
+  //spawn boost
   spawnBoost(){
     const x = Phaser.Math.Between(20, 1180);
     const texture = Phaser.Math.RND.pick(this.boostFall);
     const boost = this.boost.create(x, 0, texture);
   
-
+//
     this.score += 1;
     this.scoreText.setText("Score: " + this.score);
   }
