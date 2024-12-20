@@ -6,6 +6,8 @@ export default class GameScene2 extends Phaser.Scene {
     this.player2dead = false;
     this.score1 = 0; // Red player's score
     this.score2 = 0; // Brown player's score
+    this.bullets1 = 0
+    this.bullets2 = 0
   }
 
 
@@ -80,7 +82,7 @@ export default class GameScene2 extends Phaser.Scene {
       A: Phaser.Input.Keyboard.KeyCodes.A,
       S: Phaser.Input.Keyboard.KeyCodes.S,
       D: Phaser.Input.Keyboard.KeyCodes.D,
-      C: Phaser.Input.Keyboard.KeyCodes.C,
+      F: Phaser.Input.Keyboard.KeyCodes.F,
       UP: Phaser.Input.Keyboard.KeyCodes.UP,
       LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
@@ -144,6 +146,17 @@ export default class GameScene2 extends Phaser.Scene {
       fontSize: "32px",
       fill: "#000",
     });
+    
+    //bullets text
+    this.bulletsText1 = this.add.text(16, 80, "Red Ammo: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
+
+    this.bulletsText2 = this.add.text(16, 112, "Brown Ammo: 0", {
+      fontSize: "32px",
+      fill: "#000",
+    });
 
     // Call the spawn function repeatedly
     this.time.addEvent({
@@ -190,6 +203,9 @@ export default class GameScene2 extends Phaser.Scene {
     this.physics.add.collider(this.player1, this.boost, this.hitBoost1, null, this)
     this.physics.add.collider(this.player2, this.boost, this.hitBoost2, null, this)
     this.physics.add.collider(this.platforms, this.boost);
+    // bullets
+    this.physics.add.collider(this.player1, this.crate, this.hitCrate1, null, this)
+    this.physics.add.collider(this.player2, this.crate, this.hitCrate2, null, this)
   }
 
 //player1
@@ -304,6 +320,20 @@ export default class GameScene2 extends Phaser.Scene {
     boost.destroy(); // Destroy the boost that was hit
   }
 
+  hitCrate1(player, crate){
+    this.bullets1 += 1;  // Increase Red player's score by 100
+    this.bulletsText1.setText("Red Ammo: " + this.bullets1);  // Update the score text for player 1
+    
+    crate.destroy(); // Destroy the boost that was hit
+  }
+  hitCrate2(player, crate){
+    this.bullets2 += 1;  // Increase Red player's score by 100
+    this.bulletsText2.setText("Brown Ammo: " + this.bullets2);  // Update the score text for player 1
+    
+    crate.destroy(); // Destroy the boost that was hit
+  }
+
+
   update() {
     // Ensure hitbox2 follows player1 exactly
     this.hitbox2.setPosition(this.player1.x, this.player1.y);
@@ -367,12 +397,14 @@ export default class GameScene2 extends Phaser.Scene {
     }
 
     //shooting
-    if(this.keys.C.isDown ){
+    if(this.keys.F.isDown ){
       this.shotL = this.physics.add.image(this.player1.x, this.player1.y, "laser")
       this.shotR = this.physics.add.image(this.player1.x, this.player1.y, "laser")
 
       this.shotL.setVelocityX(-1000)
       this.shotR.setVelocityX(1000)
+      this.shotL.setVelocityY(-50)
+      this.shotR.setVelocityY(-50)
     }
 
     if(this.keys.SPACE.isDown ){
@@ -381,6 +413,8 @@ export default class GameScene2 extends Phaser.Scene {
 
       this.shotL.setVelocityX(-1000)
       this.shotR.setVelocityX(1000)
+      this.shotL.setVelocityY(-50)
+      this.shotR.setVelocityY(-50)
     }
 
     if(this.player1dead === true){
